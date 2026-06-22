@@ -58,9 +58,12 @@
                     {{ $project->issues_count }} {{ Str::plural('issue', $project->issues_count) }}
                 </span>
                 <div style="display:flex;gap:6px;">
+                    @can('update', $project)
                     <a href="{{ route('projects.edit', $project) }}" class="btn btn-secondary btn-sm">
                         <i data-lucide="pencil" class="icon"></i>
                     </a>
+                    @endcan
+                    @can('delete', $project)
                     <form action="{{ route('projects.destroy', $project) }}" method="POST"
                           onsubmit="return confirm('Delete this project and all its issues?')">
                         @csrf @method('DELETE')
@@ -68,6 +71,7 @@
                             <i data-lucide="trash-2" class="icon"></i>
                         </button>
                     </form>
+                    @endcan
                 </div>
             </div>
         </div>

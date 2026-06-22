@@ -35,10 +35,13 @@
             </div>
         </div>
         <div style="display:flex;gap:8px;flex-shrink:0;">
+            @can('update', $project)
             <a href="{{ route('projects.edit', $project) }}" class="btn btn-secondary btn-sm">
                 <i data-lucide="pencil" class="icon"></i>
                 Edit
             </a>
+            @endcan
+            @can('delete', $project)
             <form action="{{ route('projects.destroy', $project) }}" method="POST"
                   onsubmit="return confirm('Delete this project and all its issues?')">
                 @csrf @method('DELETE')
@@ -47,6 +50,7 @@
                     Delete
                 </button>
             </form>
+            @endcan
         </div>
     </div>
 </div>

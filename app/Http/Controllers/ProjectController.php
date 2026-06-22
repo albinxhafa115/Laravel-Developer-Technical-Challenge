@@ -41,18 +41,14 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        if ($project->user_id && auth()->check()) {
-            $this->authorize('update', $project);
-        }
+        $this->authorize('update', $project);
 
         return view('projects.edit', compact('project'));
     }
 
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        if ($project->user_id && auth()->check()) {
-            $this->authorize('update', $project);
-        }
+        $this->authorize('update', $project);
 
         $project->update($request->validated());
 
@@ -61,9 +57,7 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
-        if ($project->user_id && auth()->check()) {
-            $this->authorize('delete', $project);
-        }
+        $this->authorize('delete', $project);
 
         $project->delete();
 
