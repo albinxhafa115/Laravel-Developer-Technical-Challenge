@@ -67,7 +67,7 @@
                 </form>
 
                 <div id="comments-list"></div>
-                <div class="text-center mt-3" id="load-more-wrap" style="display:none!important">
+                <div class="text-center mt-3 d-none" id="load-more-wrap">
                     <button id="load-more" class="btn btn-outline-secondary btn-sm">Load more</button>
                 </div>
             </div>
@@ -204,7 +204,7 @@ function loadComments(page = 1) {
                 document.getElementById('comments-list').insertAdjacentHTML('beforeend', renderComment(c));
             });
             const wrap = document.getElementById('load-more-wrap');
-            wrap.style.display = currentPage < lastPage ? 'block' : 'none';
+            wrap.classList.toggle('d-none', currentPage >= lastPage);
         });
 }
 
@@ -219,7 +219,7 @@ document.getElementById('comment-form').addEventListener('submit', function(e) {
 
     fetch(storeCommentUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
         body: JSON.stringify({ author_name: author.value, body: body.value })
     }).then(r => r.json().then(data => ({ status: r.status, data })))
       .then(({ status, data }) => {
@@ -246,7 +246,7 @@ document.getElementById('attach-tag-btn').addEventListener('click', function() {
 
     fetch(attachUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
         body: JSON.stringify({ tag_id: tagId })
     }).then(r => r.json()).then(data => {
         const tag = data.tag;
@@ -281,7 +281,7 @@ document.getElementById('attach-user-btn').addEventListener('click', function ()
 
     fetch(attachUserUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
         body: JSON.stringify({ user_id: userId })
     }).then(r => r.json()).then(data => {
         const user = data.user;
