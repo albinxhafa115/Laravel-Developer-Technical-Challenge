@@ -23,10 +23,10 @@
                     <div style="display:flex;gap:6px;flex-shrink:0;">
                         <a href="{{ route('issues.edit', $issue) }}" class="btn btn-secondary btn-sm">
                             <i data-lucide="pencil" class="icon"></i>
-                            Edit
+                            {{ __('Edit') }}
                         </a>
                         <form action="{{ route('issues.destroy', $issue) }}" method="POST"
-                              onsubmit="return confirm('Delete this issue?')">
+                              onsubmit="return confirm('{{ __('Delete this issue?') }}')">
                             @csrf @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">
                                 <i data-lucide="trash-2" class="icon"></i>
@@ -37,10 +37,10 @@
 
                 <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
                     <span class="badge badge-{{ $issue->status }}">
-                        {{ str_replace('_', ' ', ucfirst($issue->status)) }}
+                        {{ __(str_replace('_', ' ', ucfirst($issue->status))) }}
                     </span>
                     <span class="badge badge-{{ $issue->priority }}">
-                        {{ ucfirst($issue->priority) }}
+                        {{ __(ucfirst($issue->priority)) }}
                     </span>
                     @if($issue->due_date)
                         <span class="date-pill">
@@ -62,45 +62,44 @@
             <div class="card-header">
                 <h5>
                     <i data-lucide="message-square" class="icon"></i>
-                    Comments
+                    {{ __('Comments') }}
                 </h5>
             </div>
             <div class="card-body">
-                {{-- Comment form --}}
                 <form id="comment-form" style="margin-bottom:24px;">
                     @csrf
                     <div class="form-group">
-                        <label class="form-label" for="author_name">Your name</label>
+                        <label class="form-label" for="author_name">{{ __('Your name') }}</label>
                         <input
                             type="text"
                             id="author_name"
                             name="author_name"
                             class="form-control"
-                            placeholder="Enter your name"
+                            placeholder="{{ __('Enter your name') }}"
                         >
                         <span class="invalid-feedback" id="error-author_name"></span>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="body">Comment</label>
+                        <label class="form-label" for="body">{{ __('Comment') }}</label>
                         <textarea
                             id="body"
                             name="body"
                             rows="3"
                             class="form-control"
-                            placeholder="Write a comment..."
+                            placeholder="{{ __('Write a comment...') }}"
                         ></textarea>
                         <span class="invalid-feedback" id="error-body"></span>
                     </div>
                     <button type="submit" class="btn btn-primary btn-sm">
                         <i data-lucide="message-square" class="icon"></i>
-                        Post Comment
+                        {{ __('Post Comment') }}
                     </button>
                 </form>
 
                 <div id="comments-list"></div>
 
                 <div class="text-center mt-3 d-none" id="load-more-wrap">
-                    <button id="load-more" class="btn btn-secondary btn-sm">Load more comments</button>
+                    <button id="load-more" class="btn btn-secondary btn-sm">{{ __('Load more comments') }}</button>
                 </div>
             </div>
         </div>
@@ -113,14 +112,14 @@
             <div class="card-header">
                 <h6>
                     <i data-lucide="tag" class="icon"></i>
-                    Tags
+                    {{ __('Tags') }}
                 </h6>
                 <button
                     class="btn btn-secondary btn-sm"
                     onclick="document.getElementById('tagModal').classList.add('active')"
                 >
                     <i data-lucide="plus" class="icon"></i>
-                    Manage
+                    {{ __('Manage') }}
                 </button>
             </div>
             <div class="card-body" id="tags-container">
@@ -134,7 +133,7 @@
                         </span>
                     </span>
                 @empty
-                    <p style="color:var(--text-muted);font-size:0.8125rem;margin:0;">No tags assigned.</p>
+                    <p style="color:var(--text-muted);font-size:0.8125rem;margin:0;">{{ __('No tags assigned.') }}</p>
                 @endforelse
             </div>
         </div>
@@ -144,14 +143,14 @@
             <div class="card-header">
                 <h6>
                     <i data-lucide="user" class="icon"></i>
-                    Members
+                    {{ __('Members') }}
                 </h6>
                 <button
                     class="btn btn-secondary btn-sm"
                     onclick="document.getElementById('userModal').classList.add('active')"
                 >
                     <i data-lucide="plus" class="icon"></i>
-                    Assign
+                    {{ __('Assign') }}
                 </button>
             </div>
             <div class="card-body" id="users-container">
@@ -165,7 +164,7 @@
                         </span>
                     </span>
                 @empty
-                    <p style="color:var(--text-muted);font-size:0.8125rem;margin:0;">No members assigned.</p>
+                    <p style="color:var(--text-muted);font-size:0.8125rem;margin:0;">{{ __('No members assigned.') }}</p>
                 @endforelse
             </div>
         </div>
@@ -176,16 +175,16 @@
 <div class="modal-overlay" id="tagModal">
     <div class="modal-box">
         <div class="modal-header">
-            <h5>Attach Tag</h5>
+            <h5>{{ __('Attach Tag') }}</h5>
             <button class="modal-close" onclick="document.getElementById('tagModal').classList.remove('active')">
                 <i data-lucide="x" class="icon"></i>
             </button>
         </div>
         <div class="modal-body">
             <div class="form-group">
-                <label class="form-label">Select a tag</label>
+                <label class="form-label">{{ __('Select a tag') }}</label>
                 <select id="tag-select" class="form-control">
-                    <option value="">Choose tag...</option>
+                    <option value="">{{ __('Choose tag...') }}</option>
                     @foreach($allTags as $tag)
                         <option value="{{ $tag->id }}"
                                 data-color="{{ $tag->color ?? '#6c757d' }}"
@@ -200,10 +199,10 @@
         <div class="modal-footer">
             <button id="attach-tag-btn" class="btn btn-primary btn-sm">
                 <i data-lucide="plus" class="icon"></i>
-                Attach Tag
+                {{ __('Attach Tag') }}
             </button>
             <button class="btn btn-secondary btn-sm" onclick="document.getElementById('tagModal').classList.remove('active')">
-                Cancel
+                {{ __('Cancel') }}
             </button>
         </div>
     </div>
@@ -213,16 +212,16 @@
 <div class="modal-overlay" id="userModal">
     <div class="modal-box">
         <div class="modal-header">
-            <h5>Assign Member</h5>
+            <h5>{{ __('Assign Member') }}</h5>
             <button class="modal-close" onclick="document.getElementById('userModal').classList.remove('active')">
                 <i data-lucide="x" class="icon"></i>
             </button>
         </div>
         <div class="modal-body">
             <div class="form-group">
-                <label class="form-label">Select a user</label>
+                <label class="form-label">{{ __('Select a user') }}</label>
                 <select id="user-select" class="form-control">
-                    <option value="">Choose user...</option>
+                    <option value="">{{ __('Choose user...') }}</option>
                     @foreach($allUsers as $user)
                         <option value="{{ $user->id }}" data-name="{{ $user->name }}">
                             {{ $user->name }}
@@ -234,10 +233,10 @@
         <div class="modal-footer">
             <button id="attach-user-btn" class="btn btn-primary btn-sm">
                 <i data-lucide="plus" class="icon"></i>
-                Assign
+                {{ __('Assign') }}
             </button>
             <button class="btn btn-secondary btn-sm" onclick="document.getElementById('userModal').classList.remove('active')">
-                Cancel
+                {{ __('Cancel') }}
             </button>
         </div>
     </div>
@@ -254,20 +253,17 @@ const detachUserBase = "{{ url('issues/' . $issue->id . '/users') }}";
 const commentsUrl = "{{ route('issues.comments.index', $issue) }}";
 const storeCommentUrl = "{{ route('issues.comments.store', $issue) }}";
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+const msgSelectTag = "{{ __('Please select a tag.') }}";
 
 let currentPage = 1;
 let lastPage = 1;
 
-// Close modals on backdrop click
 document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
     overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) {
-            overlay.classList.remove('active');
-        }
+        if (e.target === overlay) overlay.classList.remove('active');
     });
 });
 
-// Close modals with Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         document.querySelectorAll('.modal-overlay.active').forEach(function(m) {
@@ -329,10 +325,7 @@ document.getElementById('comment-form').addEventListener('submit', function(e) {
                 const el = document.getElementById(field);
                 if (el) el.classList.add('is-invalid');
                 const errEl = document.getElementById('error-' + field);
-                if (errEl) {
-                    errEl.textContent = msgs[0];
-                    errEl.style.display = 'block';
-                }
+                if (errEl) { errEl.textContent = msgs[0]; errEl.style.display = 'block'; }
             });
         } else {
             document.getElementById('comments-list').insertAdjacentHTML('afterbegin', renderComment(data));
@@ -344,7 +337,6 @@ document.getElementById('comment-form').addEventListener('submit', function(e) {
 
 document.getElementById('load-more').addEventListener('click', () => loadComments(currentPage + 1));
 
-// ── Tag Attach ──
 document.getElementById('attach-tag-btn').addEventListener('click', function() {
     const select = document.getElementById('tag-select');
     const tagId = select.value;
@@ -352,7 +344,7 @@ document.getElementById('attach-tag-btn').addEventListener('click', function() {
     errEl.style.display = 'none';
 
     if (!tagId) {
-        errEl.textContent = 'Please select a tag.';
+        errEl.textContent = msgSelectTag;
         errEl.style.display = 'block';
         return;
     }
@@ -380,23 +372,18 @@ document.getElementById('attach-tag-btn').addEventListener('click', function() {
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </span>
         </span>`;
-
-        // Remove "no tags" placeholder if present
         const placeholder = document.querySelector('#tags-container p');
         if (placeholder) placeholder.remove();
-
         document.getElementById('tags-container').insertAdjacentHTML('beforeend', html);
         document.getElementById('tagModal').classList.remove('active');
         select.value = '';
     });
 });
 
-// ── Tag Detach ──
 document.getElementById('tags-container').addEventListener('click', function(e) {
     const btn = e.target.closest('.tag-detach');
     if (!btn) return;
     const tagId = btn.dataset.tagId;
-
     fetch(`${detachBase}/${tagId}/detach`, {
         method: 'DELETE',
         headers: { 'X-CSRF-TOKEN': csrfToken }
@@ -408,7 +395,6 @@ document.getElementById('tags-container').addEventListener('click', function(e) 
     });
 });
 
-// ── User Attach ──
 document.getElementById('attach-user-btn').addEventListener('click', function() {
     const select = document.getElementById('user-select');
     const userId = select.value;
@@ -437,23 +423,18 @@ document.getElementById('attach-user-btn').addEventListener('click', function() 
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </span>
         </span>`;
-
-        // Remove "no members" placeholder if present
         const placeholder = document.querySelector('#users-container p');
         if (placeholder) placeholder.remove();
-
         document.getElementById('users-container').insertAdjacentHTML('beforeend', html);
         document.getElementById('userModal').classList.remove('active');
         select.value = '';
     });
 });
 
-// ── User Detach ──
 document.getElementById('users-container').addEventListener('click', function(e) {
     const btn = e.target.closest('.user-detach');
     if (!btn) return;
     const userId = btn.dataset.userId;
-
     fetch(`${detachUserBase}/${userId}/detach`, {
         method: 'DELETE',
         headers: { 'X-CSRF-TOKEN': csrfToken }

@@ -1,6 +1,6 @@
 <div class="form-group">
     <label class="form-label" for="project_id">
-        Project <span class="req">*</span>
+        {{ __('Project') }} <span class="req">*</span>
     </label>
     <select
         id="project_id"
@@ -8,7 +8,7 @@
         class="form-control @error('project_id') is-invalid @enderror"
         required
     >
-        <option value="">Select a project...</option>
+        <option value="">{{ __('Select a project...') }}</option>
         @foreach($projects as $project)
             <option value="{{ $project->id }}"
                 {{ old('project_id', $issue->project_id ?? request('project_id')) == $project->id ? 'selected' : '' }}>
@@ -23,7 +23,7 @@
 
 <div class="form-group">
     <label class="form-label" for="title">
-        Title <span class="req">*</span>
+        {{ __('Title') }} <span class="req">*</span>
     </label>
     <input
         type="text"
@@ -31,7 +31,7 @@
         name="title"
         class="form-control @error('title') is-invalid @enderror"
         value="{{ old('title', $issue->title ?? '') }}"
-        placeholder="Brief description of the issue"
+        placeholder="{{ __('Brief description of the issue') }}"
         required
     >
     @error('title')
@@ -40,13 +40,13 @@
 </div>
 
 <div class="form-group">
-    <label class="form-label" for="description">Description</label>
+    <label class="form-label" for="description">{{ __('Description') }}</label>
     <textarea
         id="description"
         name="description"
         rows="5"
         class="form-control @error('description') is-invalid @enderror"
-        placeholder="Provide more context, steps to reproduce, expected behavior..."
+        placeholder="{{ __('Provide more context, steps to reproduce, expected behavior...') }}"
     >{{ old('description', $issue->description ?? '') }}</textarea>
     @error('description')
         <span class="invalid-feedback">{{ $message }}</span>
@@ -56,7 +56,7 @@
 <div class="grid grid-3">
     <div class="form-group">
         <label class="form-label" for="status">
-            Status <span class="req">*</span>
+            {{ __('Status') }} <span class="req">*</span>
         </label>
         <select
             id="status"
@@ -66,7 +66,7 @@
             @foreach(['open', 'in_progress', 'closed'] as $s)
                 <option value="{{ $s }}"
                     {{ old('status', $issue->status ?? 'open') === $s ? 'selected' : '' }}>
-                    {{ ucfirst(str_replace('_', ' ', $s)) }}
+                    {{ __(ucfirst(str_replace('_', ' ', $s))) }}
                 </option>
             @endforeach
         </select>
@@ -77,7 +77,7 @@
 
     <div class="form-group">
         <label class="form-label" for="priority">
-            Priority <span class="req">*</span>
+            {{ __('Priority') }} <span class="req">*</span>
         </label>
         <select
             id="priority"
@@ -87,7 +87,7 @@
             @foreach(['low', 'medium', 'high'] as $p)
                 <option value="{{ $p }}"
                     {{ old('priority', $issue->priority ?? 'medium') === $p ? 'selected' : '' }}>
-                    {{ ucfirst($p) }}
+                    {{ __(ucfirst($p)) }}
                 </option>
             @endforeach
         </select>
@@ -97,7 +97,7 @@
     </div>
 
     <div class="form-group">
-        <label class="form-label" for="due_date">Due Date</label>
+        <label class="form-label" for="due_date">{{ __('Due Date') }}</label>
         <input
             type="date"
             id="due_date"

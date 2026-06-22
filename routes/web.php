@@ -13,6 +13,13 @@ Route::get('/', function () {
         : view('home');
 })->name('home');
 
+Route::post('/language/{locale}', function (string $locale) {
+    if (in_array($locale, ['en', 'sq'])) {
+        session(['locale' => $locale]);
+    }
+    return back();
+})->name('language.switch');
+
 Route::middleware('auth')->group(function () {
     Route::resource('projects', ProjectController::class);
     Route::resource('issues', IssueController::class);

@@ -1,12 +1,12 @@
 <x-guest-layout>
-    <h1 class="auth-title">Create account</h1>
-    <p class="auth-subtitle">Start managing your projects today</p>
+    <h1 class="auth-title">{{ __('Create account') }}</h1>
+    <p class="auth-subtitle">{{ __('Start managing your projects today') }}</p>
 
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
         <div class="form-group">
-            <label class="form-label" for="name">Full name</label>
+            <label class="form-label" for="name">{{ __('Full name') }}</label>
             <input
                 id="name"
                 type="text"
@@ -24,7 +24,7 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label" for="email">Email address</label>
+            <label class="form-label" for="email">{{ __('Email address') }}</label>
             <input
                 id="email"
                 type="email"
@@ -41,7 +41,7 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label" for="password">Password</label>
+            <label class="form-label" for="password">{{ __('Password') }}</label>
             <input
                 id="password"
                 type="password"
@@ -49,7 +49,7 @@
                 class="form-control @error('password') is-invalid @enderror"
                 required
                 autocomplete="new-password"
-                placeholder="At least 8 characters"
+                placeholder="{{ __('At least 8 characters') }}"
             >
             @error('password')
                 <span class="invalid-feedback">{{ $message }}</span>
@@ -57,7 +57,7 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label" for="password_confirmation">Confirm password</label>
+            <label class="form-label" for="password_confirmation">{{ __('Confirm password') }}</label>
             <input
                 id="password_confirmation"
                 type="password"
@@ -65,14 +65,14 @@
                 class="form-control"
                 required
                 autocomplete="new-password"
-                placeholder="Repeat your password"
+                placeholder="{{ __('Repeat your password') }}"
             >
         </div>
 
-        <button type="submit" class="btn btn-primary">Create account</button>
+        <button type="submit" class="btn btn-primary">{{ __('Create account') }}</button>
     </form>
 
     <div class="auth-footer">
-        Already have an account? <a href="{{ route('login') }}">Sign in</a>
+        {{ __('Already have an account?') }} <a href="{{ route('login') }}">{{ __('Sign in') }}</a>
     </div>
 </x-guest-layout>

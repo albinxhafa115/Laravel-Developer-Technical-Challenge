@@ -17,13 +17,13 @@
                 @if($project->start_date)
                     <span class="date-pill">
                         <i data-lucide="calendar" class="icon"></i>
-                        Start: {{ $project->start_date }}
+                        {{ $project->start_date }}
                     </span>
                 @endif
                 @if($project->deadline)
                     <span class="date-pill" style="color:#dc2626;border-color:#fecaca;background:#fff5f5;">
                         <i data-lucide="calendar" class="icon" style="stroke:#dc2626;"></i>
-                        Deadline: {{ $project->deadline }}
+                        {{ $project->deadline }}
                     </span>
                 @endif
                 @if($project->user)
@@ -38,16 +38,16 @@
             @can('update', $project)
             <a href="{{ route('projects.edit', $project) }}" class="btn btn-secondary btn-sm">
                 <i data-lucide="pencil" class="icon"></i>
-                Edit
+                {{ __('Edit') }}
             </a>
             @endcan
             @can('delete', $project)
             <form action="{{ route('projects.destroy', $project) }}" method="POST"
-                  onsubmit="return confirm('Delete this project and all its issues?')">
+                  onsubmit="return confirm('{{ __('Delete this project and all its issues?') }}')">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-danger btn-sm">
                     <i data-lucide="trash-2" class="icon"></i>
-                    Delete
+                    {{ __('Delete') }}
                 </button>
             </form>
             @endcan
@@ -59,24 +59,24 @@
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
     <div>
         <h2 style="font-size:1.1rem;font-weight:600;color:var(--text);">
-            Issues
+            {{ __('Issues') }}
             <span style="background:var(--bg);border:1px solid var(--border);border-radius:20px;font-size:0.8rem;padding:2px 10px;margin-left:6px;color:var(--text-muted);">{{ $issues->total() }}</span>
         </h2>
     </div>
     <a href="{{ route('issues.create') }}?project_id={{ $project->id }}" class="btn btn-primary btn-sm">
         <i data-lucide="plus" class="icon"></i>
-        Add Issue
+        {{ __('Add Issue') }}
     </a>
 </div>
 
 @if($issues->isEmpty())
     <div class="empty-state">
         <i data-lucide="bug" class="icon"></i>
-        <h3>No issues yet</h3>
-        <p>Add your first issue to this project.</p>
+        <h3>{{ __('No issues yet') }}</h3>
+        <p>{{ __('Add your first issue to this project.') }}</p>
         <a href="{{ route('issues.create') }}?project_id={{ $project->id }}" class="btn btn-primary">
             <i data-lucide="plus" class="icon"></i>
-            Add Issue
+            {{ __('Add Issue') }}
         </a>
     </div>
 @else
@@ -84,11 +84,11 @@
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Priority</th>
-                    <th>Tags</th>
-                    <th>Due Date</th>
+                    <th>{{ __('Title') }}</th>
+                    <th>{{ __('Status') }}</th>
+                    <th>{{ __('Priority') }}</th>
+                    <th>{{ __('Tags') }}</th>
+                    <th>{{ __('Due Date') }}</th>
                     <th style="width:60px;"></th>
                 </tr>
             </thead>
@@ -102,12 +102,12 @@
                     </td>
                     <td>
                         <span class="badge badge-{{ $issue->status }}">
-                            {{ str_replace('_', ' ', ucfirst($issue->status)) }}
+                            {{ __(str_replace('_', ' ', ucfirst($issue->status))) }}
                         </span>
                     </td>
                     <td>
                         <span class="badge badge-{{ $issue->priority }}">
-                            {{ ucfirst($issue->priority) }}
+                            {{ __(ucfirst($issue->priority)) }}
                         </span>
                     </td>
                     <td>

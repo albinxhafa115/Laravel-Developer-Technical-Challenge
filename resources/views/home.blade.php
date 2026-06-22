@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Issue Tracker — Project Management</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ __('Issue Tracker') }} — {{ __('Project Management') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -468,6 +469,21 @@
         }
         .footer-links a:hover { color: var(--primary); }
 
+        /* ─── Lang switcher ─── */
+        .lang-switcher {
+            display: flex; align-items: center; gap: 2px;
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 8px; padding: 2px;
+        }
+        .lang-btn {
+            padding: 4px 10px; border-radius: 6px; border: none;
+            background: transparent; font-size: 0.75rem; font-weight: 600;
+            font-family: inherit; color: var(--text-muted); cursor: pointer;
+            transition: all 0.15s; letter-spacing: 0.03em;
+        }
+        .lang-btn:hover { background: var(--surface); color: var(--text); }
+        .lang-btn.lang-active { background: var(--surface); color: var(--primary); box-shadow: var(--shadow); }
+
         /* ─── Responsive ─── */
         @media (max-width: 900px) {
             .features-grid { grid-template-columns: repeat(2, 1fr); }
@@ -497,8 +513,16 @@
             Issue Tracker
         </div>
         <div class="nav-actions">
-            <a href="{{ route('login') }}" class="btn btn-ghost">Login</a>
-            <a href="{{ route('register') }}" class="btn btn-primary">Get Started</a>
+            <div class="lang-switcher">
+                @foreach(['en' => 'EN', 'sq' => 'SQ'] as $locale => $label)
+                    <form method="POST" action="{{ route('language.switch', $locale) }}" style="display:inline">
+                        @csrf
+                        <button type="submit" class="lang-btn {{ app()->getLocale() === $locale ? 'lang-active' : '' }}">{{ $label }}</button>
+                    </form>
+                @endforeach
+            </div>
+            <a href="{{ route('login') }}" class="btn btn-ghost">{{ __('Login') }}</a>
+            <a href="{{ route('register') }}" class="btn btn-primary">{{ __('Get Started Free') }}</a>
         </div>
     </div>
 </nav>
@@ -508,24 +532,21 @@
     <div class="hero-inner">
         <div class="hero-badge">
             <i data-lucide="zap" class="icon"></i>
-            Fast, focused project management
+            {{ __('Fast, focused project management') }}
         </div>
         <h1>
-            Track issues.<br>
-            <span>Ship better software.</span>
+            {{ __('Track issues.') }}<br>
+            <span>{{ __('Ship better software.') }}</span>
         </h1>
-        <p>
-            A clean, powerful issue tracker for developers and teams. Organize projects,
-            prioritize work, and ship with confidence.
-        </p>
+        <p>{{ __('A clean, powerful issue tracker for developers and teams. Organize projects, prioritize work, and ship with confidence.') }}</p>
         <div class="hero-actions">
             <a href="{{ route('register') }}" class="btn btn-white btn-lg">
                 <i data-lucide="arrow-right" class="icon"></i>
-                Get Started Free
+                {{ __('Get Started Free') }}
             </a>
             <a href="{{ route('login') }}" class="btn btn-glass btn-lg">
                 <i data-lucide="log-in" class="icon"></i>
-                Sign In
+                {{ __('Sign in') }}
             </a>
         </div>
     </div>
@@ -539,8 +560,8 @@
                 <i data-lucide="folder" class="icon"></i>
             </div>
             <div>
-                <div class="stat-value">Projects</div>
-                <div class="stat-label">Organized workspaces</div>
+                <div class="stat-value">{{ __('Projects') }}</div>
+                <div class="stat-label">{{ __('Organized workspaces') }}</div>
             </div>
         </div>
         <div class="stat-item">
@@ -548,8 +569,8 @@
                 <i data-lucide="bug" class="icon"></i>
             </div>
             <div>
-                <div class="stat-value">Issues</div>
-                <div class="stat-label">Track every task</div>
+                <div class="stat-value">{{ __('Issues') }}</div>
+                <div class="stat-label">{{ __('Track every task') }}</div>
             </div>
         </div>
         <div class="stat-item">
@@ -557,8 +578,8 @@
                 <i data-lucide="tag" class="icon"></i>
             </div>
             <div>
-                <div class="stat-value">Tags</div>
-                <div class="stat-label">Smart categorization</div>
+                <div class="stat-value">{{ __('Tags') }}</div>
+                <div class="stat-label">{{ __('Smart categorization') }}</div>
             </div>
         </div>
         <div class="stat-item">
@@ -567,7 +588,7 @@
             </div>
             <div>
                 <div class="stat-value">Teams</div>
-                <div class="stat-label">Assign &amp; collaborate</div>
+                <div class="stat-label">{{ __('Assign & collaborate') }}</div>
             </div>
         </div>
     </div>
@@ -576,9 +597,9 @@
 {{-- Features --}}
 <section class="features">
     <div class="section-header">
-        <div class="section-kicker">Everything you need</div>
-        <h2>Built for real developer workflows</h2>
-        <p>From quick bug reports to complex feature planning — Issue Tracker keeps your team aligned.</p>
+        <div class="section-kicker">{{ __('Everything you need') }}</div>
+        <h2>{{ __('Built for real developer workflows') }}</h2>
+        <p>{{ __('From quick bug reports to complex feature planning — Issue Tracker keeps your team aligned.') }}</p>
     </div>
 
     <div class="features-grid">
@@ -586,48 +607,48 @@
             <div class="feature-icon fi-indigo">
                 <i data-lucide="folder-open" class="icon"></i>
             </div>
-            <h3>Project Workspaces</h3>
-            <p>Group related issues under projects with descriptions, start dates, and deadlines. Keep every team focused on what matters.</p>
+            <h3>{{ __('Project Workspaces') }}</h3>
+            <p>{{ __('Group related issues under projects with descriptions, start dates, and deadlines. Keep every team focused on what matters.') }}</p>
         </div>
 
         <div class="feature-card">
             <div class="feature-icon fi-green">
                 <i data-lucide="bug" class="icon"></i>
             </div>
-            <h3>Issue Management</h3>
-            <p>Create detailed issues with title, description, priority, status, and due dates. Everything a developer needs at a glance.</p>
+            <h3>{{ __('Issue Management') }}</h3>
+            <p>{{ __('Create detailed issues with title, description, priority, status, and due dates. Everything a developer needs at a glance.') }}</p>
         </div>
 
         <div class="feature-card">
             <div class="feature-icon fi-purple">
                 <i data-lucide="tag" class="icon"></i>
             </div>
-            <h3>Smart Tagging</h3>
-            <p>Attach color-coded tags to issues for instant visual categorization. Filter by any combination to find exactly what you need.</p>
+            <h3>{{ __('Smart Tagging') }}</h3>
+            <p>{{ __('Attach color-coded tags to issues for instant visual categorization. Filter by any combination to find exactly what you need.') }}</p>
         </div>
 
         <div class="feature-card">
             <div class="feature-icon fi-sky">
                 <i data-lucide="users" class="icon"></i>
             </div>
-            <h3>Team Assignment</h3>
-            <p>Assign issues to one or multiple team members. Everyone knows who owns what, reducing confusion and dropped tasks.</p>
+            <h3>{{ __('Team Assignment') }}</h3>
+            <p>{{ __('Assign issues to one or multiple team members. Everyone knows who owns what, reducing confusion and dropped tasks.') }}</p>
         </div>
 
         <div class="feature-card">
             <div class="feature-icon fi-amber">
                 <i data-lucide="message-square" class="icon"></i>
             </div>
-            <h3>Threaded Comments</h3>
-            <p>Discuss issues directly in context with a live comment feed. Load more comments on demand without leaving the page.</p>
+            <h3>{{ __('Threaded Comments') }}</h3>
+            <p>{{ __('Discuss issues directly in context with a live comment feed. Load more comments on demand without leaving the page.') }}</p>
         </div>
 
         <div class="feature-card">
             <div class="feature-icon fi-rose">
                 <i data-lucide="shield-check" class="icon"></i>
             </div>
-            <h3>Access Control</h3>
-            <p>Project owners have full control over their workspaces. Policies ensure only authorized users can edit or delete projects.</p>
+            <h3>{{ __('Access Control') }}</h3>
+            <p>{{ __('Project owners have full control over their workspaces. Policies ensure only authorized users can edit or delete projects.') }}</p>
         </div>
     </div>
 </section>
@@ -635,16 +656,16 @@
 {{-- CTA --}}
 <section class="cta">
     <div class="cta-inner">
-        <h2>Ready to ship better software?</h2>
-        <p>Create your account in seconds and start organizing your projects today.</p>
+        <h2>{{ __('Ready to ship better software?') }}</h2>
+        <p>{{ __('Create your account in seconds and start organizing your projects today.') }}</p>
         <div class="cta-actions">
             <a href="{{ route('register') }}" class="btn btn-white btn-lg">
                 <i data-lucide="user-plus" class="icon"></i>
-                Create Free Account
+                {{ __('Create Free Account') }}
             </a>
             <a href="{{ route('login') }}" class="btn btn-glass btn-lg">
                 <i data-lucide="log-in" class="icon"></i>
-                Sign In
+                {{ __('Sign in') }}
             </a>
         </div>
     </div>
@@ -655,12 +676,12 @@
     <div class="footer-inner">
         <div class="footer-brand">
             <i data-lucide="shield" class="icon"></i>
-            Issue Tracker
+            {{ __('Issue Tracker') }}
         </div>
-        <div class="footer-copy">&copy; {{ date('Y') }} Issue Tracker. Built with Laravel.</div>
+        <div class="footer-copy">&copy; {{ date('Y') }} Issue Tracker. {{ __('Built with Laravel.') }}</div>
         <div class="footer-links">
-            <a href="{{ route('login') }}">Login</a>
-            <a href="{{ route('register') }}">Register</a>
+            <a href="{{ route('login') }}">{{ __('Login') }}</a>
+            <a href="{{ route('register') }}">{{ __('Register') }}</a>
         </div>
     </div>
 </footer>

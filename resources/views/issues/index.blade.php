@@ -1,16 +1,16 @@
 @extends('layouts.main')
 
-@section('title', 'Issues')
+@section('title', __('Issues'))
 
 @section('content')
 <div class="page-header">
     <h1>
         <i data-lucide="bug" class="icon"></i>
-        Issues
+        {{ __('Issues') }}
     </h1>
     <a href="{{ route('issues.create') }}" class="btn btn-primary">
         <i data-lucide="plus" class="icon"></i>
-        New Issue
+        {{ __('New Issue') }}
     </a>
 </div>
 
@@ -23,31 +23,31 @@
                 name="search"
                 id="search-input"
                 class="form-control"
-                placeholder="Search issues..."
+                placeholder="{{ __('Search issues...') }}"
                 value="{{ request('search') }}"
             >
         </div>
 
         <select name="status" class="form-control" style="width:160px;flex-shrink:0;">
-            <option value="">All Statuses</option>
+            <option value="">{{ __('All Statuses') }}</option>
             @foreach(['open', 'in_progress', 'closed'] as $s)
                 <option value="{{ $s }}" {{ request('status') === $s ? 'selected' : '' }}>
-                    {{ ucfirst(str_replace('_', ' ', $s)) }}
+                    {{ __(ucfirst(str_replace('_', ' ', $s))) }}
                 </option>
             @endforeach
         </select>
 
         <select name="priority" class="form-control" style="width:150px;flex-shrink:0;">
-            <option value="">All Priorities</option>
+            <option value="">{{ __('All Priorities') }}</option>
             @foreach(['low', 'medium', 'high'] as $p)
                 <option value="{{ $p }}" {{ request('priority') === $p ? 'selected' : '' }}>
-                    {{ ucfirst($p) }}
+                    {{ __(ucfirst($p)) }}
                 </option>
             @endforeach
         </select>
 
         <select name="tag" class="form-control" style="width:150px;flex-shrink:0;">
-            <option value="">All Tags</option>
+            <option value="">{{ __('All Tags') }}</option>
             @foreach($tags as $tag)
                 <option value="{{ $tag->id }}" {{ request('tag') == $tag->id ? 'selected' : '' }}>
                     {{ $tag->name }}
@@ -56,8 +56,8 @@
         </select>
 
         <div style="display:flex;gap:6px;flex-shrink:0;">
-            <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-            <a href="{{ route('issues.index') }}" class="btn btn-secondary btn-sm">Reset</a>
+            <button type="submit" class="btn btn-primary btn-sm">{{ __('Filter') }}</button>
+            <a href="{{ route('issues.index') }}" class="btn btn-secondary btn-sm">{{ __('Reset') }}</a>
         </div>
     </div>
 </form>
@@ -65,11 +65,11 @@
 @if($issues->isEmpty())
     <div class="empty-state">
         <i data-lucide="bug" class="icon"></i>
-        <h3>No issues found</h3>
-        <p>Try adjusting your filters or create a new issue.</p>
+        <h3>{{ __('No issues found') }}</h3>
+        <p>{{ __('Try adjusting your filters or create a new issue.') }}</p>
         <a href="{{ route('issues.create') }}" class="btn btn-primary">
             <i data-lucide="plus" class="icon"></i>
-            New Issue
+            {{ __('New Issue') }}
         </a>
     </div>
 @else
@@ -77,12 +77,12 @@
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Project</th>
-                    <th>Status</th>
-                    <th>Priority</th>
-                    <th>Tags</th>
-                    <th>Due Date</th>
+                    <th>{{ __('Title') }}</th>
+                    <th>{{ __('Project') }}</th>
+                    <th>{{ __('Status') }}</th>
+                    <th>{{ __('Priority') }}</th>
+                    <th>{{ __('Tags') }}</th>
+                    <th>{{ __('Due Date') }}</th>
                     <th style="width:80px;"></th>
                 </tr>
             </thead>
@@ -102,12 +102,12 @@
                     </td>
                     <td>
                         <span class="badge badge-{{ $issue->status }}">
-                            {{ str_replace('_', ' ', ucfirst($issue->status)) }}
+                            {{ __(str_replace('_', ' ', ucfirst($issue->status))) }}
                         </span>
                     </td>
                     <td>
                         <span class="badge badge-{{ $issue->priority }}">
-                            {{ ucfirst($issue->priority) }}
+                            {{ __(ucfirst($issue->priority)) }}
                         </span>
                     </td>
                     <td>
@@ -128,7 +128,7 @@
                                 <i data-lucide="pencil" class="icon"></i>
                             </a>
                             <form action="{{ route('issues.destroy', $issue) }}" method="POST"
-                                  onsubmit="return confirm('Delete this issue?')">
+                                  onsubmit="return confirm('{{ __('Delete this issue?') }}')">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm">
                                     <i data-lucide="trash-2" class="icon"></i>

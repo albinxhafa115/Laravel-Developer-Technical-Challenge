@@ -3,11 +3,11 @@
         <div class="session-status">{{ session('status') }}</div>
     @endif
 
-    <h1 class="auth-title">Welcome back</h1>
-    <p class="auth-subtitle">Sign in to your account</p>
+    <h1 class="auth-title">{{ __('Welcome back') }}</h1>
+    <p class="auth-subtitle">{{ __('Sign in to your account') }}</p>
 
     <div style="margin-bottom:24px;">
-        <p style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#94a3b8;margin-bottom:10px;">Demo accounts — click to fill</p>
+        <p style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#94a3b8;margin-bottom:10px;">{{ __('Demo accounts — click to fill') }}</p>
         <div style="display:flex;flex-direction:column;gap:8px;">
             <button type="button" onclick="fillLogin('alice@example.com','password')"
                 style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;text-align:left;transition:all 0.15s;width:100%;font-family:inherit;"
@@ -20,7 +20,7 @@
                 </div>
                 <div style="margin-left:auto;font-size:0.75rem;color:#94a3b8;display:flex;align-items:center;gap:4px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                    Use
+                    {{ __('Use') }}
                 </div>
             </button>
             <button type="button" onclick="fillLogin('bob@example.com','password')"
@@ -34,7 +34,7 @@
                 </div>
                 <div style="margin-left:auto;font-size:0.75rem;color:#94a3b8;display:flex;align-items:center;gap:4px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                    Use
+                    {{ __('Use') }}
                 </div>
             </button>
         </div>
@@ -44,7 +44,7 @@
         @csrf
 
         <div class="form-group">
-            <label class="form-label" for="email">Email address</label>
+            <label class="form-label" for="email">{{ __('Email address') }}</label>
             <input
                 id="email"
                 type="email"
@@ -62,7 +62,7 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label" for="password">Password</label>
+            <label class="form-label" for="password">{{ __('Password') }}</label>
             <input
                 id="password"
                 type="password"
@@ -70,7 +70,7 @@
                 class="form-control @error('password') is-invalid @enderror"
                 required
                 autocomplete="current-password"
-                placeholder="Your password"
+                placeholder="••••••••"
             >
             @error('password')
                 <span class="invalid-feedback">{{ $message }}</span>
@@ -80,21 +80,21 @@
         <div style="margin-bottom: 20px;">
             <label style="display:flex;align-items:center;gap:8px;font-size:0.875rem;color:#64748b;cursor:pointer;">
                 <input type="checkbox" name="remember" style="accent-color:#4f46e5;">
-                Remember me
+                {{ __('Remember me') }}
             </label>
         </div>
 
-        <button type="submit" class="btn btn-primary">Sign in</button>
+        <button type="submit" class="btn btn-primary">{{ __('Sign in') }}</button>
 
         @if (Route::has('password.request'))
             <div class="auth-footer" style="margin-top:16px;">
-                <a href="{{ route('password.request') }}">Forgot your password?</a>
+                <a href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
             </div>
         @endif
     </form>
 
     <div class="auth-footer">
-        Don't have an account? <a href="{{ route('register') }}">Create account</a>
+        {{ __("Don't have an account?") }} <a href="{{ route('register') }}">{{ __('Create account') }}</a>
     </div>
 
     <script>

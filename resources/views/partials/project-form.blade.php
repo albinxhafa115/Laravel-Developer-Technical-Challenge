@@ -1,6 +1,6 @@
 <div class="form-group">
     <label class="form-label" for="name">
-        Project Name <span class="req">*</span>
+        {{ __('Project Name') }} <span class="req">*</span>
     </label>
     <input
         type="text"
@@ -8,7 +8,7 @@
         name="name"
         class="form-control @error('name') is-invalid @enderror"
         value="{{ old('name', $project->name ?? '') }}"
-        placeholder="e.g. Website Redesign"
+        placeholder="{{ __('e.g. Website Redesign') }}"
         required
     >
     @error('name')
@@ -17,13 +17,13 @@
 </div>
 
 <div class="form-group">
-    <label class="form-label" for="description">Description</label>
+    <label class="form-label" for="description">{{ __('Description') }}</label>
     <textarea
         id="description"
         name="description"
         rows="4"
         class="form-control @error('description') is-invalid @enderror"
-        placeholder="Briefly describe this project..."
+        placeholder="{{ __('Briefly describe this project...') }}"
     >{{ old('description', $project->description ?? '') }}</textarea>
     @error('description')
         <span class="invalid-feedback">{{ $message }}</span>
@@ -32,7 +32,7 @@
 
 <div class="grid grid-2">
     <div class="form-group">
-        <label class="form-label" for="start_date">Start Date</label>
+        <label class="form-label" for="start_date">{{ __('Start Date') }}</label>
         <input
             type="date"
             id="start_date"
@@ -45,7 +45,7 @@
         @enderror
     </div>
     <div class="form-group">
-        <label class="form-label" for="deadline">Deadline</label>
+        <label class="form-label" for="deadline">{{ __('Deadline') }}</label>
         <input
             type="date"
             id="deadline"

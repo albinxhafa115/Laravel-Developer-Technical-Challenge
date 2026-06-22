@@ -1,27 +1,27 @@
 @extends('layouts.main')
 
-@section('title', 'Projects')
+@section('title', __('Projects'))
 
 @section('content')
 <div class="page-header">
     <h1>
         <i data-lucide="folder" class="icon"></i>
-        Projects
+        {{ __('Projects') }}
     </h1>
     <a href="{{ route('projects.create') }}" class="btn btn-primary">
         <i data-lucide="plus" class="icon"></i>
-        New Project
+        {{ __('New Project') }}
     </a>
 </div>
 
 @if($projects->isEmpty())
     <div class="empty-state">
         <i data-lucide="folder" class="icon"></i>
-        <h3>No projects yet</h3>
-        <p>Create your first project to start tracking issues.</p>
+        <h3>{{ __('No projects yet') }}</h3>
+        <p>{{ __('Create your first project to start tracking issues.') }}</p>
         <a href="{{ route('projects.create') }}" class="btn btn-primary">
             <i data-lucide="plus" class="icon"></i>
-            New Project
+            {{ __('New Project') }}
         </a>
     </div>
 @else
@@ -55,7 +55,7 @@
             <div class="project-card-footer">
                 <span class="issues-count">
                     <i data-lucide="bug" style="width:13px;height:13px;stroke:#94a3b8;margin-right:4px;vertical-align:middle;"></i>
-                    {{ $project->issues_count }} {{ Str::plural('issue', $project->issues_count) }}
+                    {{ $project->issues_count }} {{ $project->issues_count == 1 ? __('issue') : __('issues') }}
                 </span>
                 <div style="display:flex;gap:6px;">
                     @can('update', $project)
@@ -65,7 +65,7 @@
                     @endcan
                     @can('delete', $project)
                     <form action="{{ route('projects.destroy', $project) }}" method="POST"
-                          onsubmit="return confirm('Delete this project and all its issues?')">
+                          onsubmit="return confirm('{{ __('Delete this project and all its issues?') }}')">
                         @csrf @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm">
                             <i data-lucide="trash-2" class="icon"></i>
