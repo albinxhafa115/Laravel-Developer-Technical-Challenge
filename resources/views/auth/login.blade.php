@@ -6,6 +6,40 @@
     <h1 class="auth-title">Welcome back</h1>
     <p class="auth-subtitle">Sign in to your account</p>
 
+    <div style="margin-bottom:24px;">
+        <p style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#94a3b8;margin-bottom:10px;">Demo accounts — click to fill</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <button type="button" onclick="fillLogin('alice@example.com','password')"
+                style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;text-align:left;transition:all 0.15s;width:100%;font-family:inherit;"
+                onmouseover="this.style.background='#eef2ff';this.style.borderColor='#a5b4fc'"
+                onmouseout="this.style.background='#f8fafc';this.style.borderColor='#e2e8f0'">
+                <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:#fff;flex-shrink:0;">AJ</div>
+                <div>
+                    <div style="font-size:0.875rem;font-weight:600;color:#0f172a;">Alice Johnson</div>
+                    <div style="font-size:0.75rem;color:#64748b;">alice@example.com</div>
+                </div>
+                <div style="margin-left:auto;font-size:0.75rem;color:#94a3b8;display:flex;align-items:center;gap:4px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                    Use
+                </div>
+            </button>
+            <button type="button" onclick="fillLogin('bob@example.com','password')"
+                style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;text-align:left;transition:all 0.15s;width:100%;font-family:inherit;"
+                onmouseover="this.style.background='#eef2ff';this.style.borderColor='#a5b4fc'"
+                onmouseout="this.style.background='#f8fafc';this.style.borderColor='#e2e8f0'">
+                <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#6366f1);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:#fff;flex-shrink:0;">BS</div>
+                <div>
+                    <div style="font-size:0.875rem;font-weight:600;color:#0f172a;">Bob Smith</div>
+                    <div style="font-size:0.75rem;color:#64748b;">bob@example.com</div>
+                </div>
+                <div style="margin-left:auto;font-size:0.75rem;color:#94a3b8;display:flex;align-items:center;gap:4px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                    Use
+                </div>
+            </button>
+        </div>
+    </div>
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -62,4 +96,12 @@
     <div class="auth-footer">
         Don't have an account? <a href="{{ route('register') }}">Create account</a>
     </div>
+
+    <script>
+        function fillLogin(email, password) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = password;
+            document.getElementById('email').focus();
+        }
+    </script>
 </x-guest-layout>
