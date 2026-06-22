@@ -41,10 +41,7 @@ class IssueController extends Controller
 
     public function store(StoreIssueRequest $request)
     {
-        $issue = Issue::create([
-            ...$request->validated(),
-            'project_id' => $request->input('project_id'),
-        ]);
+        $issue = Issue::create($request->validated());
 
         return redirect()->route('issues.show', $issue)->with('success', 'Issue created successfully.');
     }
@@ -73,9 +70,9 @@ class IssueController extends Controller
 
     public function destroy(Issue $issue)
     {
-        $projectId = $issue->project_id;
+        $project = $issue->project;
         $issue->delete();
 
-        return redirect()->route('projects.show', $projectId)->with('success', 'Issue deleted successfully.');
+        return redirect()->route('projects.show', $project)->with('success', 'Issue deleted successfully.');
     }
 }
