@@ -7,6 +7,8 @@ use App\Http\Requests\UpdateIssueRequest;
 use App\Models\Issue;
 use App\Models\Project;
 use App\Models\Tag;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class IssueController extends Controller
 {
@@ -24,6 +26,11 @@ class IssueController extends Controller
 
         if (request('tag')) {
             $query->whereHas('tags', fn($q) => $q->where('tags.id', request('tag')));
+        }
+
+        if (request('search')) {
+            $search = '%' . request('search') . '%';
+            $query->where(fn($q) => $q->where('title', 'like', $search)->orWhere('description', 'like', $search));
         }
 
         $issues = $query->latest()->paginate(15)->withQueryString();
@@ -48,10 +55,11 @@ class IssueController extends Controller
 
     public function show(Issue $issue)
     {
-        $issue->load(['project', 'tags']);
+        $issue->load(['project', 'tags', 'users']);
         $allTags = Tag::orderBy('name')->get();
+        $allUsers = User::orderBy('name')->get();
 
-        return view('issues.show', compact('issue', 'allTags'));
+        return view('issues.show', compact('issue', 'allTags', 'allUsers'));
     }
 
     public function edit(Issue $issue)
@@ -74,5 +82,23 @@ class IssueController extends Controller
         $issue->delete();
 
         return redirect()->route('projects.show', $project)->with('success', 'Issue deleted successfully.');
+    }
+
+    public function attachUser(Request $request, Issue $issue)
+    {
+        $request->validate(['user_id' => ['required', 'exists:users,id']]);
+
+        $issue->users()->syncWithoutDetaching([$request->user_id]);
+
+        $user = User::find($request->user_id);
+
+        return response()->json(['user' => $user]);
+    }
+
+    public function detachUser(Issue $issue, User $user)
+    {
+        $issue->users()->detach($user->id);
+
+        return response()->json(['success' => true]);
     }
 }

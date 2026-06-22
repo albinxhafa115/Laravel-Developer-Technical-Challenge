@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('title', 'Issues')
 
@@ -10,8 +10,12 @@
     </a>
 </div>
 
-<form method="GET" class="row g-2 mb-4">
+<form method="GET" class="row g-2 mb-4" id="filter-form">
     <div class="col-md-3">
+        <input type="text" name="search" id="search-input" class="form-control form-control-sm"
+               placeholder="Search issues..." value="{{ request('search') }}">
+    </div>
+    <div class="col-md-2">
         <select name="status" class="form-select form-select-sm">
             <option value="">All Statuses</option>
             @foreach(['open', 'in_progress', 'closed'] as $s)
@@ -21,7 +25,7 @@
             @endforeach
         </select>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <select name="priority" class="form-select form-select-sm">
             <option value="">All Priorities</option>
             @foreach(['low', 'medium', 'high'] as $p)
@@ -31,7 +35,7 @@
             @endforeach
         </select>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <select name="tag" class="form-select form-select-sm">
             <option value="">All Tags</option>
             @foreach($tags as $tag)
@@ -46,6 +50,18 @@
         <a href="{{ route('issues.index') }}" class="btn btn-sm btn-outline-secondary">Reset</a>
     </div>
 </form>
+
+@section('scripts')
+<script>
+let debounceTimer;
+document.getElementById('search-input').addEventListener('input', function () {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        document.getElementById('filter-form').submit();
+    }, 400);
+});
+</script>
+@endsection
 
 @if($issues->isEmpty())
     <div class="alert alert-info">No issues found.</div>

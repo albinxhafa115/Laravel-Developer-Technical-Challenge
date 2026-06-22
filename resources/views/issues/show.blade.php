@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('title', $issue->title)
 
@@ -74,9 +74,9 @@
         </div>
     </div>
 
-    {{-- Tags Section --}}
+    {{-- Tags & Members Section --}}
     <div class="col-lg-4">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h6 class="mb-0"><i class="bi bi-tags"></i> Tags</h6>
                 <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#tagModal">
@@ -92,6 +92,50 @@
                         <i class="bi bi-x tag-detach" role="button" data-tag-id="{{ $tag->id }}"></i>
                     </span>
                 @endforeach
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="bi bi-people"></i> Members</h6>
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#userModal">
+                    <i class="bi bi-plus-lg"></i> Assign
+                </button>
+            </div>
+            <div class="card-body" id="users-container">
+                @foreach($issue->users as $member)
+                    <span class="badge bg-secondary me-1 mb-1 d-inline-flex align-items-center gap-1"
+                          data-user-id="{{ $member->id }}">
+                        <i class="bi bi-person"></i> {{ $member->name }}
+                        <i class="bi bi-x user-detach" role="button" data-user-id="{{ $member->id }}"></i>
+                    </span>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- User Modal --}}
+<div class="modal fade" id="userModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign Member</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <select id="user-select" class="form-select">
+                    <option value="">Select a user...</option>
+                    @foreach($allUsers as $user)
+                        <option value="{{ $user->id }}" data-name="{{ $user->name }}">
+                            {{ $user->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button id="attach-user-btn" class="btn btn-primary">Assign</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -132,6 +176,8 @@
 const issueId = {{ $issue->id }};
 const attachUrl = "{{ route('issues.tags.attach', $issue) }}";
 const detachBase = "{{ url('issues/' . $issue->id . '/tags') }}";
+const attachUserUrl = "{{ route('issues.users.attach', $issue) }}";
+const detachUserBase = "{{ url('issues/' . $issue->id . '/users') }}";
 const commentsUrl = "{{ route('issues.comments.index', $issue) }}";
 const storeCommentUrl = "{{ route('issues.comments.store', $issue) }}";
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -225,6 +271,41 @@ document.getElementById('tags-container').addEventListener('click', function(e) 
         headers: { 'X-CSRF-TOKEN': csrfToken }
     }).then(r => r.json()).then(() => {
         document.querySelector(`[data-tag-id="${tagId}"].tag-badge`)?.remove();
+    });
+});
+
+document.getElementById('attach-user-btn').addEventListener('click', function () {
+    const select = document.getElementById('user-select');
+    const userId = select.value;
+    if (!userId) return;
+
+    fetch(attachUserUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+        body: JSON.stringify({ user_id: userId })
+    }).then(r => r.json()).then(data => {
+        const user = data.user;
+        if (document.querySelector(`[data-user-id="${user.id}"].badge`)) return;
+        const html = `<span class="badge bg-secondary me-1 mb-1 d-inline-flex align-items-center gap-1"
+            data-user-id="${user.id}">
+            <i class="bi bi-person"></i> ${user.name}
+            <i class="bi bi-x user-detach" role="button" data-user-id="${user.id}"></i>
+        </span>`;
+        document.getElementById('users-container').insertAdjacentHTML('beforeend', html);
+        bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
+    });
+});
+
+document.getElementById('users-container').addEventListener('click', function (e) {
+    const btn = e.target.closest('.user-detach');
+    if (!btn) return;
+    const userId = btn.dataset.userId;
+
+    fetch(`${detachUserBase}/${userId}/detach`, {
+        method: 'DELETE',
+        headers: { 'X-CSRF-TOKEN': csrfToken }
+    }).then(r => r.json()).then(() => {
+        document.querySelector(`[data-user-id="${userId}"].badge`)?.remove();
     });
 });
 

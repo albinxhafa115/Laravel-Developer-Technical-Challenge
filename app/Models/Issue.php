@@ -25,4 +25,9 @@ class Issue extends Model
     {
         return $this->belongsToMany(Tag::class, 'issue_tag');
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'issue_user');
+    }
 }
