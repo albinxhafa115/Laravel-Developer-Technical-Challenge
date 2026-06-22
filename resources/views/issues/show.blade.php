@@ -3,155 +3,189 @@
 @section('title', $issue->title)
 
 @section('content')
-<div class="row">
-    <div class="col-lg-8">
-        <div class="card shadow-sm mb-4">
+<div class="layout-2col">
+    {{-- Left Column: Issue + Comments --}}
+    <div>
+        {{-- Issue Card --}}
+        <div class="card" style="margin-bottom:20px;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h3 class="mb-1">{{ $issue->title }}</h3>
-                        <a href="{{ route('projects.show', $issue->project) }}" class="text-muted small text-decoration-none">
-                            <i class="bi bi-folder"></i> {{ $issue->project->name }}
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+                    <div style="flex:1;min-width:0;">
+                        <h2 style="font-size:1.25rem;font-weight:700;letter-spacing:-0.01em;color:var(--text);margin-bottom:6px;">
+                            {{ $issue->title }}
+                        </h2>
+                        <a href="{{ route('projects.show', $issue->project) }}"
+                           style="font-size:0.875rem;color:var(--text-muted);display:inline-flex;align-items:center;gap:5px;">
+                            <i data-lucide="folder" style="width:13px;height:13px;"></i>
+                            {{ $issue->project->name }}
                         </a>
                     </div>
-                    <div class="d-flex gap-2">
-                        <a href="{{ route('issues.edit', $issue) }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-pencil"></i> Edit
+                    <div style="display:flex;gap:6px;flex-shrink:0;">
+                        <a href="{{ route('issues.edit', $issue) }}" class="btn btn-secondary btn-sm">
+                            <i data-lucide="pencil" class="icon"></i>
+                            Edit
                         </a>
                         <form action="{{ route('issues.destroy', $issue) }}" method="POST"
                               onsubmit="return confirm('Delete this issue?')">
                             @csrf @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i data-lucide="trash-2" class="icon"></i>
+                            </button>
                         </form>
                     </div>
                 </div>
 
-                <div class="d-flex gap-2 mt-3">
-                    <span class="badge badge-{{ $issue->status }} fs-6">
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+                    <span class="badge badge-{{ $issue->status }}">
                         {{ str_replace('_', ' ', ucfirst($issue->status)) }}
                     </span>
-                    <span class="badge badge-{{ $issue->priority }} fs-6">
+                    <span class="badge badge-{{ $issue->priority }}">
                         {{ ucfirst($issue->priority) }}
                     </span>
                     @if($issue->due_date)
-                        <span class="badge bg-light text-dark border fs-6">
-                            <i class="bi bi-calendar"></i> {{ $issue->due_date }}
+                        <span class="date-pill">
+                            <i data-lucide="calendar" class="icon"></i>
+                            {{ $issue->due_date }}
                         </span>
                     @endif
                 </div>
 
                 @if($issue->description)
-                    <hr>
-                    <p class="mt-3">{{ $issue->description }}</p>
+                    <hr class="divider">
+                    <p style="font-size:0.9rem;color:var(--text);line-height:1.7;white-space:pre-wrap;">{{ $issue->description }}</p>
                 @endif
             </div>
         </div>
 
         {{-- Comments Section --}}
-        <div class="card shadow-sm">
-            <div class="card-header"><h5 class="mb-0"><i class="bi bi-chat"></i> Comments</h5></div>
+        <div class="card">
+            <div class="card-header">
+                <h5>
+                    <i data-lucide="message-square" class="icon"></i>
+                    Comments
+                </h5>
+            </div>
             <div class="card-body">
-                <form id="comment-form" class="mb-4">
+                {{-- Comment form --}}
+                <form id="comment-form" style="margin-bottom:24px;">
                     @csrf
-                    <div class="mb-2">
-                        <input type="text" id="author_name" name="author_name"
-                               class="form-control" placeholder="Your name">
-                        <div class="invalid-feedback" id="error-author_name"></div>
+                    <div class="form-group">
+                        <label class="form-label" for="author_name">Your name</label>
+                        <input
+                            type="text"
+                            id="author_name"
+                            name="author_name"
+                            class="form-control"
+                            placeholder="Enter your name"
+                        >
+                        <span class="invalid-feedback" id="error-author_name"></span>
                     </div>
-                    <div class="mb-2">
-                        <textarea id="body" name="body" rows="3"
-                                  class="form-control" placeholder="Write a comment..."></textarea>
-                        <div class="invalid-feedback" id="error-body"></div>
+                    <div class="form-group">
+                        <label class="form-label" for="body">Comment</label>
+                        <textarea
+                            id="body"
+                            name="body"
+                            rows="3"
+                            class="form-control"
+                            placeholder="Write a comment..."
+                        ></textarea>
+                        <span class="invalid-feedback" id="error-body"></span>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-sm">Post Comment</button>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i data-lucide="message-square" class="icon"></i>
+                        Post Comment
+                    </button>
                 </form>
 
                 <div id="comments-list"></div>
+
                 <div class="text-center mt-3 d-none" id="load-more-wrap">
-                    <button id="load-more" class="btn btn-outline-secondary btn-sm">Load more</button>
+                    <button id="load-more" class="btn btn-secondary btn-sm">Load more comments</button>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Tags & Members Section --}}
-    <div class="col-lg-4">
-        <div class="card shadow-sm mb-3">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="mb-0"><i class="bi bi-tags"></i> Tags</h6>
-                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#tagModal">
-                    <i class="bi bi-plus-lg"></i> Manage
+    {{-- Right Column: Tags + Members --}}
+    <div>
+        {{-- Tags Card --}}
+        <div class="card" style="margin-bottom:16px;">
+            <div class="card-header">
+                <h6>
+                    <i data-lucide="tag" class="icon"></i>
+                    Tags
+                </h6>
+                <button
+                    class="btn btn-secondary btn-sm"
+                    onclick="document.getElementById('tagModal').classList.add('active')"
+                >
+                    <i data-lucide="plus" class="icon"></i>
+                    Manage
                 </button>
             </div>
             <div class="card-body" id="tags-container">
-                @foreach($issue->tags as $tag)
-                    <span class="tag-badge me-1 mb-1 d-inline-flex align-items-center gap-1"
+                @forelse($issue->tags as $tag)
+                    <span class="tag-pill me-1 mb-2"
                           style="background-color: {{ $tag->color ?? '#6c757d' }}"
                           data-tag-id="{{ $tag->id }}">
                         {{ $tag->name }}
-                        <i class="bi bi-x tag-detach" role="button" data-tag-id="{{ $tag->id }}"></i>
+                        <span class="tag-x tag-detach" role="button" data-tag-id="{{ $tag->id }}">
+                            <i data-lucide="x" class="icon"></i>
+                        </span>
                     </span>
-                @endforeach
+                @empty
+                    <p style="color:var(--text-muted);font-size:0.8125rem;margin:0;">No tags assigned.</p>
+                @endforelse
             </div>
         </div>
 
-        <div class="card shadow-sm">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="mb-0"><i class="bi bi-people"></i> Members</h6>
-                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#userModal">
-                    <i class="bi bi-plus-lg"></i> Assign
+        {{-- Members Card --}}
+        <div class="card">
+            <div class="card-header">
+                <h6>
+                    <i data-lucide="user" class="icon"></i>
+                    Members
+                </h6>
+                <button
+                    class="btn btn-secondary btn-sm"
+                    onclick="document.getElementById('userModal').classList.add('active')"
+                >
+                    <i data-lucide="plus" class="icon"></i>
+                    Assign
                 </button>
             </div>
             <div class="card-body" id="users-container">
-                @foreach($issue->users as $member)
-                    <span class="badge bg-secondary me-1 mb-1 d-inline-flex align-items-center gap-1"
+                @forelse($issue->users as $member)
+                    <span class="user-pill me-1 mb-2"
                           data-user-id="{{ $member->id }}">
-                        <i class="bi bi-person"></i> {{ $member->name }}
-                        <i class="bi bi-x user-detach" role="button" data-user-id="{{ $member->id }}"></i>
+                        <i data-lucide="user" class="icon"></i>
+                        {{ $member->name }}
+                        <span class="user-detach" role="button" data-user-id="{{ $member->id }}">
+                            <i data-lucide="x" class="icon"></i>
+                        </span>
                     </span>
-                @endforeach
-            </div>
-        </div>
-    </div>
-</div>
-
-{{-- User Modal --}}
-<div class="modal fade" id="userModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Assign Member</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <select id="user-select" class="form-select">
-                    <option value="">Select a user...</option>
-                    @foreach($allUsers as $user)
-                        <option value="{{ $user->id }}" data-name="{{ $user->name }}">
-                            {{ $user->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="modal-footer">
-                <button id="attach-user-btn" class="btn btn-primary">Assign</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                @empty
+                    <p style="color:var(--text-muted);font-size:0.8125rem;margin:0;">No members assigned.</p>
+                @endforelse
             </div>
         </div>
     </div>
 </div>
 
 {{-- Tag Modal --}}
-<div class="modal fade" id="tagModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Attach Tag</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <select id="tag-select" class="form-select">
-                    <option value="">Select a tag...</option>
+<div class="modal-overlay" id="tagModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h5>Attach Tag</h5>
+            <button class="modal-close" onclick="document.getElementById('tagModal').classList.remove('active')">
+                <i data-lucide="x" class="icon"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Select a tag</label>
+                <select id="tag-select" class="form-control">
+                    <option value="">Choose tag...</option>
                     @foreach($allTags as $tag)
                         <option value="{{ $tag->id }}"
                                 data-color="{{ $tag->color ?? '#6c757d' }}"
@@ -160,12 +194,51 @@
                         </option>
                     @endforeach
                 </select>
-                <div id="tag-error" class="text-danger small mt-1" style="display:none"></div>
+                <span id="tag-error" class="invalid-feedback" style="display:none;"></span>
             </div>
-            <div class="modal-footer">
-                <button id="attach-tag-btn" class="btn btn-primary">Attach</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+        <div class="modal-footer">
+            <button id="attach-tag-btn" class="btn btn-primary btn-sm">
+                <i data-lucide="plus" class="icon"></i>
+                Attach Tag
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('tagModal').classList.remove('active')">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+{{-- User Modal --}}
+<div class="modal-overlay" id="userModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h5>Assign Member</h5>
+            <button class="modal-close" onclick="document.getElementById('userModal').classList.remove('active')">
+                <i data-lucide="x" class="icon"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Select a user</label>
+                <select id="user-select" class="form-control">
+                    <option value="">Choose user...</option>
+                    @foreach($allUsers as $user)
+                        <option value="{{ $user->id }}" data-name="{{ $user->name }}">
+                            {{ $user->name }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
+        </div>
+        <div class="modal-footer">
+            <button id="attach-user-btn" class="btn btn-primary btn-sm">
+                <i data-lucide="plus" class="icon"></i>
+                Assign
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('userModal').classList.remove('active')">
+                Cancel
+            </button>
         </div>
     </div>
 </div>
@@ -185,11 +258,31 @@ const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 let currentPage = 1;
 let lastPage = 1;
 
+// Close modals on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            overlay.classList.remove('active');
+        }
+    });
+});
+
+// Close modals with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(function(m) {
+            m.classList.remove('active');
+        });
+    }
+});
+
 function renderComment(c) {
-    return `<div class="border-bottom py-2 mb-2">
-        <strong>${c.author_name}</strong>
-        <span class="text-muted small ms-2">${new Date(c.created_at).toLocaleString()}</span>
-        <p class="mb-0 mt-1">${c.body}</p>
+    return `<div class="comment-item">
+        <div>
+            <span class="comment-author">${c.author_name}</span>
+            <span class="comment-time">${new Date(c.created_at).toLocaleString()}</span>
+        </div>
+        <p class="comment-body">${c.body}</p>
     </div>`;
 }
 
@@ -212,22 +305,34 @@ document.getElementById('comment-form').addEventListener('submit', function(e) {
     e.preventDefault();
     const author = document.getElementById('author_name');
     const body = document.getElementById('body');
+
     ['author_name', 'body'].forEach(f => {
-        document.getElementById(f).classList.remove('is-invalid');
-        document.getElementById('error-' + f).textContent = '';
+        const el = document.getElementById(f);
+        el.classList.remove('is-invalid');
+        const errEl = document.getElementById('error-' + f);
+        if (errEl) errEl.textContent = '';
     });
 
     fetch(storeCommentUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
         body: JSON.stringify({ author_name: author.value, body: body.value })
-    }).then(r => r.json().then(data => ({ status: r.status, data })))
-      .then(({ status, data }) => {
+    })
+    .then(r => r.json().then(data => ({ status: r.status, data })))
+    .then(({ status, data }) => {
         if (status === 422) {
             Object.entries(data.errors).forEach(([field, msgs]) => {
-                document.getElementById(field)?.classList.add('is-invalid');
+                const el = document.getElementById(field);
+                if (el) el.classList.add('is-invalid');
                 const errEl = document.getElementById('error-' + field);
-                if (errEl) errEl.textContent = msgs[0];
+                if (errEl) {
+                    errEl.textContent = msgs[0];
+                    errEl.style.display = 'block';
+                }
             });
         } else {
             document.getElementById('comments-list').insertAdjacentHTML('afterbegin', renderComment(data));
@@ -239,28 +344,54 @@ document.getElementById('comment-form').addEventListener('submit', function(e) {
 
 document.getElementById('load-more').addEventListener('click', () => loadComments(currentPage + 1));
 
+// ── Tag Attach ──
 document.getElementById('attach-tag-btn').addEventListener('click', function() {
     const select = document.getElementById('tag-select');
     const tagId = select.value;
-    if (!tagId) return;
+    const errEl = document.getElementById('tag-error');
+    errEl.style.display = 'none';
+
+    if (!tagId) {
+        errEl.textContent = 'Please select a tag.';
+        errEl.style.display = 'block';
+        return;
+    }
 
     fetch(attachUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
         body: JSON.stringify({ tag_id: tagId })
-    }).then(r => r.json()).then(data => {
+    })
+    .then(r => r.json())
+    .then(data => {
         const tag = data.tag;
-        if (document.querySelector(`[data-tag-id="${tag.id}"]`)) return;
-        const html = `<span class="tag-badge me-1 mb-1 d-inline-flex align-items-center gap-1"
+        if (document.querySelector(`[data-tag-id="${tag.id}"].tag-pill`)) {
+            document.getElementById('tagModal').classList.remove('active');
+            return;
+        }
+        const html = `<span class="tag-pill me-1 mb-2"
             style="background-color: ${tag.color ?? '#6c757d'}" data-tag-id="${tag.id}">
             ${tag.name}
-            <i class="bi bi-x tag-detach" role="button" data-tag-id="${tag.id}"></i>
+            <span class="tag-x tag-detach" role="button" data-tag-id="${tag.id}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </span>
         </span>`;
+
+        // Remove "no tags" placeholder if present
+        const placeholder = document.querySelector('#tags-container p');
+        if (placeholder) placeholder.remove();
+
         document.getElementById('tags-container').insertAdjacentHTML('beforeend', html);
-        bootstrap.Modal.getInstance(document.getElementById('tagModal')).hide();
+        document.getElementById('tagModal').classList.remove('active');
+        select.value = '';
     });
 });
 
+// ── Tag Detach ──
 document.getElementById('tags-container').addEventListener('click', function(e) {
     const btn = e.target.closest('.tag-detach');
     if (!btn) return;
@@ -269,34 +400,56 @@ document.getElementById('tags-container').addEventListener('click', function(e) 
     fetch(`${detachBase}/${tagId}/detach`, {
         method: 'DELETE',
         headers: { 'X-CSRF-TOKEN': csrfToken }
-    }).then(r => r.json()).then(() => {
-        document.querySelector(`[data-tag-id="${tagId}"].tag-badge`)?.remove();
+    })
+    .then(r => r.json())
+    .then(() => {
+        const pill = document.querySelector(`.tag-pill[data-tag-id="${tagId}"]`);
+        if (pill) pill.remove();
     });
 });
 
-document.getElementById('attach-user-btn').addEventListener('click', function () {
+// ── User Attach ──
+document.getElementById('attach-user-btn').addEventListener('click', function() {
     const select = document.getElementById('user-select');
     const userId = select.value;
     if (!userId) return;
 
     fetch(attachUserUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
         body: JSON.stringify({ user_id: userId })
-    }).then(r => r.json()).then(data => {
+    })
+    .then(r => r.json())
+    .then(data => {
         const user = data.user;
-        if (document.querySelector(`[data-user-id="${user.id}"].badge`)) return;
-        const html = `<span class="badge bg-secondary me-1 mb-1 d-inline-flex align-items-center gap-1"
-            data-user-id="${user.id}">
-            <i class="bi bi-person"></i> ${user.name}
-            <i class="bi bi-x user-detach" role="button" data-user-id="${user.id}"></i>
+        if (document.querySelector(`.user-pill[data-user-id="${user.id}"]`)) {
+            document.getElementById('userModal').classList.remove('active');
+            return;
+        }
+        const html = `<span class="user-pill me-1 mb-2" data-user-id="${user.id}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            ${user.name}
+            <span class="user-detach" role="button" data-user-id="${user.id}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </span>
         </span>`;
+
+        // Remove "no members" placeholder if present
+        const placeholder = document.querySelector('#users-container p');
+        if (placeholder) placeholder.remove();
+
         document.getElementById('users-container').insertAdjacentHTML('beforeend', html);
-        bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
+        document.getElementById('userModal').classList.remove('active');
+        select.value = '';
     });
 });
 
-document.getElementById('users-container').addEventListener('click', function (e) {
+// ── User Detach ──
+document.getElementById('users-container').addEventListener('click', function(e) {
     const btn = e.target.closest('.user-detach');
     if (!btn) return;
     const userId = btn.dataset.userId;
@@ -304,8 +457,11 @@ document.getElementById('users-container').addEventListener('click', function (e
     fetch(`${detachUserBase}/${userId}/detach`, {
         method: 'DELETE',
         headers: { 'X-CSRF-TOKEN': csrfToken }
-    }).then(r => r.json()).then(() => {
-        document.querySelector(`[data-user-id="${userId}"].badge`)?.remove();
+    })
+    .then(r => r.json())
+    .then(() => {
+        const pill = document.querySelector(`.user-pill[data-user-id="${userId}"]`);
+        if (pill) pill.remove();
     });
 });
 

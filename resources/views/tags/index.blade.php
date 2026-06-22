@@ -3,55 +3,103 @@
 @section('title', 'Tags')
 
 @section('content')
-<div class="row">
-    <div class="col-md-4">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header"><h5 class="mb-0">New Tag</h5></div>
-            <div class="card-body">
-                <form action="{{ route('tags.store') }}" method="POST">
-                    @csrf
-                    <div class="mb-3">
-                        <label class="form-label">Name <span class="text-danger">*</span></label>
-                        <input type="text" name="name"
-                               class="form-control @error('name') is-invalid @enderror"
-                               value="{{ old('name') }}">
-                        @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+<div class="page-header">
+    <h1>
+        <i data-lucide="tag" class="icon"></i>
+        Tags
+    </h1>
+</div>
+
+<div style="display:grid;grid-template-columns:320px 1fr;gap:24px;align-items:start;">
+    {{-- New Tag Form --}}
+    <div class="card">
+        <div class="card-header">
+            <h5>New Tag</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('tags.store') }}" method="POST">
+                @csrf
+
+                <div class="form-group">
+                    <label class="form-label" for="tag-name">
+                        Name <span class="req">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="tag-name"
+                        name="name"
+                        class="form-control @error('name') is-invalid @enderror"
+                        value="{{ old('name') }}"
+                        placeholder="e.g. bug, feature, urgent"
+                        required
+                    >
+                    @error('name')
+                        <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="tag-color">Color</label>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <input
+                            type="color"
+                            id="tag-color"
+                            name="color"
+                            class="form-control @error('color') is-invalid @enderror"
+                            value="{{ old('color', '#4f46e5') }}"
+                            style="width:52px;padding:3px 5px;height:38px;cursor:pointer;flex-shrink:0;"
+                        >
+                        <span style="font-size:0.8125rem;color:var(--text-muted);">Pick a color for this tag</span>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Color</label>
-                        <div class="d-flex gap-2 align-items-center">
-                            <input type="color" name="color"
-                                   class="form-control form-control-color @error('color') is-invalid @enderror"
-                                   value="{{ old('color', '#6c757d') }}">
-                            <small class="text-muted">Pick a color for the tag</small>
-                        </div>
-                        @error('color')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                    </div>
-                    <button type="submit" class="btn btn-primary">Create Tag</button>
-                </form>
-            </div>
+                    @error('color')
+                        <span class="invalid-feedback" style="display:block;">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%;">
+                    <i data-lucide="plus" class="icon"></i>
+                    Create Tag
+                </button>
+            </form>
         </div>
     </div>
 
-    <div class="col-md-8">
-        <div class="card shadow-sm">
-            <div class="card-header"><h5 class="mb-0"><i class="bi bi-tags"></i> All Tags</h5></div>
-            <div class="card-body">
-                @if($tags->isEmpty())
-                    <p class="text-muted">No tags yet.</p>
-                @else
-                    <div class="d-flex flex-wrap gap-2 mb-3">
-                        @foreach($tags as $tag)
-                            <span class="tag-badge d-inline-flex align-items-center gap-1"
-                                  style="background-color: {{ $tag->color ?? '#6c757d' }}">
-                                {{ $tag->name }}
-                                <span class="badge bg-white text-dark ms-1">{{ $tag->issues_count }}</span>
-                            </span>
-                        @endforeach
-                    </div>
-                    {{ $tags->links() }}
-                @endif
-            </div>
+    {{-- All Tags --}}
+    <div class="card">
+        <div class="card-header">
+            <h5>
+                <i data-lucide="tag" class="icon"></i>
+                All Tags
+            </h5>
+            <span style="font-size:0.8125rem;color:var(--text-muted);">{{ $tags->total() }} {{ Str::plural('tag', $tags->total()) }}</span>
+        </div>
+        <div class="card-body">
+            @if($tags->isEmpty())
+                <div class="empty-state" style="padding:40px 16px;">
+                    <i data-lucide="tag" class="icon"></i>
+                    <h3>No tags yet</h3>
+                    <p>Create your first tag using the form on the left.</p>
+                </div>
+            @else
+                <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
+                    @foreach($tags as $tag)
+                        <span class="tag-pill" style="background-color: {{ $tag->color ?? '#6c757d' }};font-size:0.875rem;padding:5px 14px;">
+                            {{ $tag->name }}
+                            <span style="
+                                display:inline-flex;
+                                align-items:center;
+                                background:rgba(255,255,255,0.25);
+                                border-radius:20px;
+                                padding:1px 7px;
+                                font-size:0.75rem;
+                                font-weight:700;
+                                margin-left:4px;
+                            ">{{ $tag->issues_count }}</span>
+                        </span>
+                    @endforeach
+                </div>
+                <div>{{ $tags->links() }}</div>
+            @endif
         </div>
     </div>
 </div>
